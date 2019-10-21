@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<meta charset="UTF-8"/>
+		<title>Cadeira: Programação Web | TPC: Form | Curso: MEIT | Aluno: João Miguel Soares | Nº:20160313</title>
+	</head>
+			  
+<style>
+label {
+  font-family: "Trebuchet MS", Verdana, Halvetica, Arial;
+  font-size: 14px;
+  color: #040507;
+  display: block;
+}
+input[type=text], select {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+input[type=submit] {
+  background-color: #4CAF50;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+input[type=submit]:hover {
+  background-color: #45a049;
+}
+input[type=reset] {
+  background-color: #FF0000;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+input[type=reset]:hover {
+  background-color: #cc0000;
+}
+input[type=button] {
+  background-color: #668cff;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+input[type=button]:hover {
+  background-color: #0040ff;
+}
+
+div {
+  border-radius: 5px;
+  background-color: #f2f2f2;
+  padding: 20px;
+}
+</style>
+<script>
+	function validateForm() {
+	// colocar aqui todas as validações
+	// devolve false se falhar alguma regra, true caso contrário
+	// utilizar a variável formFeedback para indicar os erros
+		console.log("sadfsad");
+		
+		var cc = document.getElementById("cc").value; //vai buscar o valor inserido do campo cc
+		var cp = document.getElementById("cp").value; //vai buscar o valor inserido do campo cp
+		var nif = document.getElementById("nif").value; //vai buscar o valor inserido do campo nif
+		var email = document.getElementById("email").value; //vai buscar o valor inserido para o email
+		var regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; //variavel de ajuda a validação de email usando um regex
+		var bday = new Date(document.getElementById("bday").value); //vai buscar da data de nascimento inserida
+		var today = new Date(); //vai buscar a data de hoje
+		console.log(bday);
+		var age = today.getFullYear() - bday.getFullYear(); //calcula a idade (anos) do utilizador
+		var month = today.getMonth() - bday.getMonth(); //calculo auxiliar da idade ao nivel de meses
+		
+		//validação do tamanho do cartão de cidadão
+		if (isNaN(cc) || cc.length < 8 || cc.length > 8) {
+			document.getElementById("formFeedback").style.color = "red";
+			document.getElementById("formFeedback").innerHTML = "Erro: número de CC inválido!";
+			//Vamos ajudar o utilizador indicando qual o campo errado
+			document.getElementById("cc").focus();
+			
+			return false;
+		}
+
+		//validação do NIF
+
+		if (
+			nif.substr(0,1) != '1' && // pessoa singular
+			nif.substr(0,1) != '2' && // pessoa singular
+			nif.substr(0,1) != '3' && // pessoa singular
+			nif.substr(0,2) != '45' && // pessoa singular não residente
+			nif.substr(0,1) != '5' && // pessoa colectiva
+			nif.substr(0,1) != '6' && // administração pública
+			nif.substr(0,2) != '70' && // herança indivisa
+			nif.substr(0,2) != '71' && // pessoa colectiva não residente
+			nif.substr(0,2) != '72' && // fundos de investimento
+			nif.substr(0,2) != '77' && // atribuição oficiosa
+			nif.substr(0,2) != '79' && // regime excepcional
+			nif.substr(0,1) != '8' && // empresário em nome individual (extinto)
+			nif.substr(0,2) != '90' && // condominios e sociedades irregulares
+			nif.substr(0,2) != '91' && // condominios e sociedades irregulares
+			nif.substr(0,2) != '98' && // não residentes
+			nif.substr(0,2) != '99' // sociedades civis
+
+		) {
+			document.getElementById("formFeedback").style.color = "red";
+			document.getElementById("formFeedback").innerHTML = "Erro: NIF inválido!";
+			//Vamos ajudar o utilizador indicando qual o campo errado
+			document.getElementById("nif").focus();
+			
+			return false;
+		}
+		
+		//validação se o utilizador é maior de 18 anos
+		if (month < 0 || (month === 0 && today.getDate() < bday.getDate())) {
+			document.getElementById("formFeedback").style.color = "red";
+			document.getElementById("formFeedback").innerHTML = "Erro: O utilizador tem que ter obrigatoriamente mais de 18 anos";
+			//Vamos ajudar o utilizador indicando qual o campo errado
+			document.getElementById("bday").focus();
+			
+			return false;
+		}
+
+
+		//validação do campo email
+		if (regex.test(String(email).toLowerCase()) != true) {
+			document.getElementById("formFeedback").style.color = "red";
+			document.getElementById("formFeedback").innerHTML = "Erro: email inválido";
+			//Vamos ajudar o utilizador indicando qual o campo errado
+			document.getElementById("email").focus();
+			
+			return false;
+		}
+
+
+		
+		else {
+			
+			// colocar aqui o alert com todos os dados inseridos e validados
+			document.getElementById("formFeedback").style.color = "green";
+			document.getElementById("formFeedback").innerHTML = "Ok!";
+		}
+
+	}
+	
+	function callSecurityAPI() {
+		// Em primeiro lugar, vamos obter o IP da nossa máquina
+		var xhttp = new XMLHttpRequest();
+		var ipClient ="";
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+             //alert(this.responseText);
+			 //var myArr = JSON.parse(this.responseText);
+			 //document.getElementById("securityinfo").innerHTML = "Segurança: " + this.responseText;
+			 ipClient=this.responseText;
+			}
+		};
+		xhttp.open("GET", "https://api.ipify.org", true);
+		xhttp.send();
+		
+		// Vamos de seguida obter informações sobre o nosso IP chamando outra API
+		var xhttp2 = new XMLHttpRequest();
+		xhttp2.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+             //alert(this.responseText);
+			 //var myArr = JSON.parse(this.responseText);
+			 document.getElementById("securityinfo").innerHTML = "Dados deste computador: " + this.responseText;
+			}
+		};
+		var urlToCall ="https://ipapi.co/" + ipClient + "/json/";
+		xhttp2.open("GET", urlToCall, true);
+		xhttp2.send();
+	}
+
+	function callThinkingAPI() {
+		document.getElementById("pensamento").innerHTML = "Thinking!";
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+             
+			 var myArr = JSON.parse(this.responseText);
+			 // Estamos a ir buscar o campo activity do objecto JSON
+			 document.getElementById("pensamento").innerHTML = "Pensamento do dia: " + myArr.activity;
+			}
+		};
+		xhttp.open("GET", "https://www.boredapi.com/api/activity?type=recreational", true);
+		xhttp.send();
+	}
+
+	//Leitura da Latitude e Longitude com Base no Codigo Postal
+
+	function callCodigoPostalAPI() {
+		//document.getElementById("pensamento").innerHTML = "Thinking!";
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == XMLHttpRequest.DONE && this.status == 200) {
+				console.log(this);
+				var myArr = JSON.parse(this.responseText);
+				// Estamos a ir buscar o campo latitude do objecto JSON
+				document.getElementById("latitude").innerHTML = myArr.latitude;
+				document.getElementById("longitude").innerHTML = myArr.longitude
+			}
+		};
+		
+		var geturl = "http://codigospostais.appspot.com/cp4?codigo=" + cp.value.substr(0,4);
+		xhttp.open("GET", geturl, true);
+		xhttp.send();
+		
+	}
+
+	function test(response){
+		console.log(response);
+	}
+
+	function setValidation(input) {
+		if (input.value.length == 0) {
+			input.setCustomValidity('Preencha o campo...');
+		} else {
+			input.setValidation()
+		}
+	}
+	
+</script>
+<body onload="callSecurityAPI()">
+
+<h3>Uso de CSS para formatar estilos num Form HTML</h3>
+
+<div>
+  <form action="/action_page.php" onsubmit="validateForm()" method="post">
+    <label for="name">Nome</label>
+    <input type="text" id="name" name="username" placeholder="Seu nome..." required ><br>
+
+    <label for="bday">Data de Nascimento</label>
+    <input type="date" id="bday" name="userbday" required /><br><br>
+
+    <label for="nif">NIF</label>
+    <input type="text" id="nif" name="usernif" placeholder="Seu NIF..." required  ><br>
+	
+	<label for="cc">CC</label>
+    <input type="text" id="cc" name="usercc" placeholder="Seu CC..."><br>
+	
+	<label for="address">Morada</label>
+    <input type="text" id="address" name="useraddress" placeholder="Sua morada..."><br>
+	
+	<label for="cp">C&oacute;digo Postal</label>
+    <input type="text" id="cp" name="usercp" placeholder="Insira os quatro primeiros digitos..."><br>
+	
+	<label for="city">Cidade</label>
+    <input type="text" id="city" name="usercity" placeholder="Sua cidade..."><br>
+	
+	<label for="latitude">Latitute</label>
+    <input type="text" id="latitude" name="userlatitude" placeholder="Preenchimento automático"><br>
+	
+	<label for="longitude">Longitude</label>
+    <input type="text" id="longitude" name="userlongitude" placeholder="Preenchimento automático"><br>
+	
+	<label for="email">Email</label>
+    <input type="email" id="email" name="useremail" placeholder="Seu email..." required ><br>
+	
+	<label for="mobile">Telemóvel</label>
+    <input type="text" id="mobile" name="usermobile" placeholder="Seu telemóvel..."><br>
+  
+	<input type="submit" value="Submit">
+	<input type="reset" value="Clear">
+	<input type="button" value="Pensamento do dia" onclick="callThinkingAPI()"> 
+	<input type="button" value="Latitude\Longitude" onclick="callCodigoPostalAPI()"> 
+
+
+	<p id="formFeedback"></p>
+	<label id="pensamento"></label>
+  </form>
+  <br /><B>Informações de segurança</B>
+  <p id=securityinfo></p>
+</div>
+
+</body>
+</html>
